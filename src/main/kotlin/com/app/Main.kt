@@ -4,22 +4,31 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.WebSocket
 import java.util.concurrent.CompletionStage
-import java.util.concurrent.CountDownLatch
+import java.util.logging.Level
+import java.util.logging.Logger
 
 fun main(args: Array<String>) {
     val clients = mutableListOf<WebSocket>()
-    for (i in 1..180) {
-        for (j in 1..15_000) {
-            val ws: WebSocket = HttpClient
-                .newHttpClient()
-                .newWebSocketBuilder()
-                .buildAsync(URI.create("ws://10.129.0.11:8080/ws/failing/calculation"), WebSocketClient())
-                .join()
-            ws.sendText("Hello!", true)
+    val logger = Logger.getLogger("main")
+    logger.level = Level.ALL
 
-            clients.add(ws)
+    for (i in 1..180) {
+        for (j in 1..1000) {
+            try {
+                val ws: WebSocket = HttpClient
+                    .newHttpClient()
+                    .newWebSocketBuilder()
+                    .buildAsync(URI.create("ws://localhost:8080/ws/failing/calculation"), WebSocketClient())
+                    .join()
+                ws.sendText("Hello!", true)
+
+                clients.add(ws)
+            } catch (e: Exception) {
+                logger.info("Final $j")
+                throw e
+            }
         }
-        println(i)
+        logger.info(i.toString()+"\n")
         Thread.sleep(1_000)
     }
 }
