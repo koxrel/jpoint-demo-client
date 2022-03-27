@@ -12,8 +12,10 @@ fun main(args: Array<String>) {
     val logger = Logger.getLogger("main")
     logger.level = Level.ALL
 
+    var k = 0L
+
     for (i in 1..180) {
-        for (j in 1..1000) {
+        for (j in 1..5000) {
             try {
                 val ws: WebSocket = HttpClient
                     .newHttpClient()
@@ -23,12 +25,14 @@ fun main(args: Array<String>) {
                 ws.sendText("Hello!", true)
 
                 clients.add(ws)
+                ++k
             } catch (e: Exception) {
                 logger.info("Final $j")
                 throw e
             }
         }
         logger.info(i.toString()+"\n")
+        logger.info(k.toString()+"\n")
         Thread.sleep(1_000)
     }
 }
