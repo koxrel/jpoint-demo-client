@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
             val ws: WebSocket = HttpClient
                 .newHttpClient()
                 .newWebSocketBuilder()
-                .buildAsync(URI.create("ws://localhost:8080/ws/failing/calculation"), WebSocketClient())
+                .buildAsync(URI.create("ws://10.129.0.11:8080/ws/failing/calculation"), WebSocketClient())
                 .join()
             ws.sendText("Hello!", true)
 
